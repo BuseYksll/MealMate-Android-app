@@ -140,14 +140,14 @@ fun DolapScreen(
                                 horizontalArrangement = Arrangement.SpaceBetween
                             ) {
                                 val imageRes = when (item.lowercase()) {
-                                    "apple" -> R.drawable.elma
-                                    "avocado" -> R.drawable.avakado
-                                    "banana" -> R.drawable.muz
-                                    "blueberry" -> R.drawable.blueberry
-                                    "cherry" -> R.drawable.cherry
-                                    "grapefruit" -> R.drawable.grape
-                                    "kiwi" -> R.drawable.kivi
-                                    "lemon" -> R.drawable.lemon
+                                    "elma" -> R.drawable.elma
+                                    "avokado" -> R.drawable.avakado
+                                    "muz" -> R.drawable.muz
+                                    "yaban mersini" -> R.drawable.blueberry
+                                    "kiraz" -> R.drawable.cherry
+                                    "üzüm" -> R.drawable.grape
+                                    "kivi" -> R.drawable.kivi
+                                    "limon" -> R.drawable.lemon
                                     "ananas" -> R.drawable.ananas
                                     "kaşar peyniri" -> R.drawable.kasar
                                     "krema" -> R.drawable.krema

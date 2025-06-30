@@ -44,7 +44,7 @@ val groceryData = mapOf(
     "Et" to listOf("ciğer", "tavuk göğsü", "yağlı dana kıyma"),
     "Sebzeler" to listOf("domates", "domates salçası", "havuç", "kırmızı biber", "kırmızı soğan", "maydanoz", "patates", "soğan", "toz kırmızı biber", "yeşil biber"),
     "Diğerleri" to listOf("nişasta", "su", "kırmızı mercimek", "sarı mercimek"),
-    "Meyve" to listOf("Apple", "Avocado", "Banana", "Blueberry", "Cherry", "Grapefruit", "Kiwi", "Lemon", "Ananas")
+    "Meyve" to listOf("Elma", "Avokado", "Muz", "Yaban mersini", "Kiraz", "Üzüm", "Kivi", "Limon", "Ananas")
 )
 
 val groceryColors = listOf(
@@ -189,14 +189,14 @@ fun MarketScreen(
                 items(items.filter { it.contains(searchQuery.text, ignoreCase = true) }) { item ->
                     val isSelected = selectedItems.contains(item)
                     val imageRes = when (item.lowercase()) {
-                        "apple" -> R.drawable.elma
-                        "avocado" -> R.drawable.avakado
-                        "banana" -> R.drawable.muz
-                        "blueberry" -> R.drawable.blueberry
-                        "cherry" -> R.drawable.cherry
-                        "grapefruit" -> R.drawable.grape
-                        "kiwi" -> R.drawable.kivi
-                        "lemon" -> R.drawable.lemon
+                        "elma" -> R.drawable.elma
+                        "avokado" -> R.drawable.avakado
+                        "muz" -> R.drawable.muz
+                        "yaban mersini" -> R.drawable.blueberry
+                        "kiraz" -> R.drawable.cherry
+                        "üzüm" -> R.drawable.grape
+                        "kivi" -> R.drawable.kivi
+                        "limon" -> R.drawable.lemon
                         "ananas" -> R.drawable.ananas
                         "kaşar peyniri" -> R.drawable.kasar
                         "krema" -> R.drawable.krema
