@@ -203,23 +203,6 @@ fun BottomBarItem(iconRes: Int, label: String, selected: Boolean, onClick: () ->
     }
 }
 
-/**
- * ANA EKRAN (MAIN SCREEN)
- * 
- * Bu ekran uygulamanın ana sayfasıdır. Kullanıcıya tarif önerileri sunar ve
- * farklı kategorilerde tarifler gösterir.
- * 
- * ANA ÖZELLİKLER:
- * - PratikTarifler: Kullanıcının dolabındaki malzemelere göre akıllı tarif önerileri
- * - Kategori seçimi: Çorbalar, Kahvaltı, Deniz, Tatlı kategorileri
- * - Tarif detayları: Seçilen tarifin detaylı bilgilerini gösterir
- * 
- * AKILLI TARİF FİLTRELEME SİSTEMİ:
- * 1. Kullanıcının dolabındaki malzemeleri kontrol eder
- * 2. Her tarif için "ana malzemeler" listesi tanımlar
- * 3. Sadece TÜM ana malzemeler mevcut olan tarifleri gösterir
- * 4. Bu sayede kullanıcı sadece yapabileceği tarifleri görür
- */
 @Composable
 fun MainScreen(
     selectedTab: Int,
@@ -227,11 +210,8 @@ fun MainScreen(
     modifier: Modifier = Modifier,
     dolapItems: List<String> = emptyList()
 ) {
-    // DURUM YÖNETİMİ
-    var showRecipeDetail by remember { mutableStateOf(false) } // Tarif detay ekranını göster/gizle
-    var selectedRecipeDetail by remember { mutableStateOf<RecipeDetail?>(null) } // Seçilen tarifin detayları
-    
-    // TARİF DETAY EKRANI KONTROLÜ
+    var showRecipeDetail by remember { mutableStateOf(false) }
+    var selectedRecipeDetail by remember { mutableStateOf<RecipeDetail?>(null) }
     if (showRecipeDetail && selectedRecipeDetail != null) {
         RecipeDetailScreen(
             imageRes = selectedRecipeDetail!!.imageRes,
@@ -248,14 +228,12 @@ fun MainScreen(
             fat = selectedRecipeDetail!!.fat,
             carbs = selectedRecipeDetail!!.carbs,
             protein = selectedRecipeDetail!!.protein,
-            onBack = { showRecipeDetail = false }, // Tarif detayından geri dön
+            onBack = { showRecipeDetail = false },
             ingredients = selectedRecipeDetail!!.ingredients,
             instructions = selectedRecipeDetail!!.instructions
         )
         return
     }
-    
-    // ANA EKRAN İÇERİĞİ
     MainScaffold(
         selectedTab = selectedTab,
         onTabSelected = onTabSelected,
@@ -265,7 +243,6 @@ fun MainScreen(
         Column(
             modifier = Modifier.verticalScroll(rememberScrollState())
         ) {
-            // Arama çubuğu kartı
             Card(
                 shape = RoundedCornerShape(16.dp),
                 elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
@@ -290,63 +267,76 @@ fun MainScreen(
                             tint = Color(0xFF888888),
                             modifier = Modifier.size(24.dp)
                         )
-                        Spacer(modifier = Modifier.width(12.dp))
+                        Spacer(modifier = Modifier.width(8.dp))
                         Text(
-                            text = "Tarif ara...",
+                            text = "Lezzetli bir şey mi arıyorsunuz?",
                             color = Color(0xFF888888),
-                            fontSize = 16.sp
+                            fontSize = 16.sp,
+                            modifier = Modifier.weight(1f)
                         )
+                        Surface(
+                            shape = CircleShape,
+                            color = Color(0xFFFFE6EA),
+                            modifier = Modifier.size(36.dp)
+                        ) {
+                            Icon(
+                                painter = painterResource(id = R.drawable.ic_camera),
+                                contentDescription = "Kamera",
+                                tint = Color(0xFFE11932),
+                                modifier = Modifier
+                                    .padding(6.dp)
+                                    .size(24.dp)
+                                    .clickable { /* TODO: Camera action */ }
+                            )
+                        }
                     }
                 }
             }
-            
-            // Öne çıkan tarif kartı (Lahmacun)
+            Spacer(modifier = Modifier.height(16.dp))
+            Text(
+                text = "Tarifleri Keşfet",
+                fontWeight = FontWeight.Bold,
+                fontSize = 24.sp,
+                color = Color.Black,
+                modifier = Modifier.padding(start = 4.dp, bottom = 8.dp)
+            )
             DiscoverRecipeStackedCard(onClick = {
                 selectedRecipeDetail = RecipeDetail(
                     imageRes = R.drawable.lahmacun,
                     title = "Lahmacun",
-                    author = "Gordon Ramsay",
-                    rating = 4.7,
+                    author = "MealMate Chef",
+                    rating = 4.8,
                     ratingsCount = 512,
-                    description = "Geleneksel Türk mutfağının en sevilen lezzetlerinden biri olan lahmacun, ince hamur üzerine kıymalı harç ile hazırlanır.",
+                    description = "Lahmacun, kıyma, sebze ve otlarla doldurulmuş lezzetli bir Türk gözleme ekmeğidir. Popüler bir sokak yemeği ve Türk mutfağının favorisidir.",
                     prepTime = "30 mins",
-                    cookTime = "15 mins",
-                    totalTime = "45 mins",
+                    cookTime = "25 mins",
+                    totalTime = "55 mins",
                     servings = "4",
-                    calories = "280",
-                    fat = "12 g",
-                    carbs = "35 g",
-                    protein = "18 g",
+                    calories = "420",
+                    fat = "16 g",
+                    carbs = "48 g",
+                    protein = "20 g",
                     ingredients = listOf(
-                        "Lahmacun Hamuru:",
-                        "2 su bardağı un",
-                        "1 çay kaşığı tuz",
-                        "1 çay kaşığı şeker",
-                        "1 paket instant maya",
-                        "1 su bardağı ılık su",
-                        "---",
-                        "Lahmacun Harcı:",
-                        "300 gram yağlı dana kıyma",
-                        "2 adet soğan (ince doğranmış)",
-                        "2 adet domates (rendelenmiş)",
-                        "2 adet yeşil biber (ince doğranmış)",
-                        "1/2 demet maydanoz (ince doğranmış)",
-                        "2 yemek kaşığı domates salçası",
-                        "1 çay kaşığı tuz",
+                        "1 adet soğan",
+                        "2 adet domates",
+                        "250 gram kıyma",
+                        "1 yemek kaşığı biber salçası",
+                        "1 tatlı kaşığı tuz",
                         "1 çay kaşığı karabiber",
                         "1 çay kaşığı pul biber",
-                        "1 çay kaşığı sumak",
-                        "---",
-                        "Servis İçin:",
-                        "Sumaklı soğan",
-                        "Maydanoz",
-                        "Limon"
+                        "1/2 çay bardağı sıvı yağ",
+                        "1/2 demet maydanoz",
+                        "4 adet lahmacun hamuru"
                     ),
                     instructions = listOf(
-                        "Hamur için un, tuz, şeker ve mayayı karıştırın. Ilık suyu ekleyerek yumuşak bir hamur yoğurun.",
-                        "Hamuru 1 saat oda sıcaklığında mayalandırın.",
-                        "Harcı hazırlamak için tüm malzemeleri bir kapta iyice karıştırın.",
-                        "Mayalanan hamuru 8 parçaya bölün ve her birini açın.",
+                        "Lahmacun için önce mutfak robotuna kırmızı biberleri, yeşil biberleri, soğanları ve domatesleri ilave edin.",
+                        "Tamamen püre haline gelmeyecek şekilde çekin.",
+                        "Maydanozları da ekleyin ve 10 saniye kadar daha çekin.",
+                        "Domates salçası, biber salçası, sıvı yağ ve suyu ekleyin. Son olarak kıymayı ekleyerek güzelce yoğurun. Lahmacunun lezzetli olması için harcınızın cıvık bir kıvamda olması gerekir. Yeteri kadar cıvık bir kıvamda değilse, biraz su ekleyebilirsiniz.",
+                        "Hazırladığınız harcı vaktiniz varsa bir süre buzdolabında dinlendirin.",
+                        "Harcınız dinlenirken, hamurunuzu yapmaya başlayın. Suyu bir kaba dökün, üzerine tuz ve şekeri ilave ederek güzelce karıştırın. Azar azar da un ilave edin. Orta sertliğe ulaşana dek yoğurun.",
+                        "Hamuru bir silindir haline getirip eşit parçalara bölün. Aynı büyüklükte lahmacunlar yapabilmek için hamurlarınızın ağırlığı da eşit olmalıdır. Bezeleri bir süre dinlenmeye bırakın.",
+                        "Hazırladığınız bezeleri yemek tabağı büyüklüğünde açın. Mümkün olduğu kadar ince açmanız önemlidir. Bu sırada fırınınızı 250 derece fanlı ve alt-üst açık olacak şekilde açın. Güzelce ısıtın.",
                         "Açtığınız hamurların üzerine kıymalı harcı yayın. Fırının tabanına yağlı kağıt ile birlikte yerleştirin ve 7-10 dakika altı kızarana kadar pişirin.",
                         "Sumaklı soğan, maydanoz ve bol limonla servis edin.",
                         "Ev yapımı nefis lahmacun hazır. Afiyet olsun!"
@@ -354,18 +344,14 @@ fun MainScreen(
                 )
                 showRecipeDetail = true
             })
-            
-            // Kategori satırı
             CategoryRow()
-            
-            // PRATİK TARİFLER BÖLÜMÜ
             PratikTarifler(
                 onRecipeClick = { recipe ->
-                    selectedRecipeDetail = recipe // Seçilen tarifi detay için ayarla
-                    showRecipeDetail = true // Tarif detay ekranını göster
+                    selectedRecipeDetail = recipe
+                    showRecipeDetail = true
                 },
-                dolapItems = dolapItems, // Kullanıcının dolabındaki malzemeleri gönder
-                onNavigateToMarket = { onTabSelected(1) } // Market ekranına yönlendir
+                dolapItems = dolapItems,
+                onNavigateToMarket = { onTabSelected(1) }
             )
         }
     }
@@ -552,23 +538,6 @@ fun CategoryItem(iconRes: Int, label: String) {
     }
 }
 
-/**
- * PRATİK TARİFLER BÖLÜMÜ
- * 
- * Bu bölüm kullanıcının dolabındaki malzemelere göre akıllı tarif önerileri sunar.
- * 
- * ÇALIŞMA MANTIĞI:
- * 1. Eğer dolap boşsa: Kullanıcıyı markete yönlendirir
- * 2. Eğer malzeme varsa: Akıllı filtreleme ile uygun tarifleri gösterir
- * 3. Her tarif için "ana malzemeler" tanımlanır
- * 4. Sadece TÜM ana malzemeler mevcut olan tarifler gösterilir
- * 
- * AKILLI FİLTRELEME SİSTEMİ:
- * - Her tarif için 4-5 ana malzeme belirlenir
- * - Bu malzemeler tarifin yapılabilmesi için kritik öneme sahiptir
- * - Kullanıcının dolabında TÜM ana malzemeler varsa tarif gösterilir
- * - Bu sayede kullanıcı sadece gerçekten yapabileceği tarifleri görür
- */
 @Composable
 fun PratikTarifler(
     onRecipeClick: (RecipeDetail) -> Unit,
@@ -576,7 +545,6 @@ fun PratikTarifler(
     onNavigateToMarket: () -> Unit = {}
 ) {
     Column(modifier = Modifier.padding(top = 16.dp)) {
-        // Bölüm başlığı
         Text(
             text = "Pratik Tarifleri 🍽️",
             fontWeight = FontWeight.Bold,
@@ -585,7 +553,6 @@ fun PratikTarifler(
             modifier = Modifier.padding(bottom = 12.dp)
         )
         
-        // DOLAP BOŞ KONTROLÜ
         if (dolapItems.isEmpty()) {
             // Malzeme yoksa mesaj göster
             Card(
@@ -624,7 +591,7 @@ fun PratikTarifler(
                     )
                     Spacer(modifier = Modifier.height(20.dp))
                     Button(
-                        onClick = onNavigateToMarket, // Market ekranına yönlendir
+                        onClick = onNavigateToMarket,
                         shape = RoundedCornerShape(50),
                         colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFE11932)),
                         modifier = Modifier.height(48.dp)
@@ -646,13 +613,9 @@ fun PratikTarifler(
                 }
             }
         } else {
-            // AKILLI TARİF FİLTRELEME SİSTEMİ
             // Malzeme var ama eşleşen tarif yoksa kontrol et
-            val normalizedDolap = dolapItems.map { it.trim().lowercase() } // Dolap malzemelerini normalize et
-            
-            // MEVCUT TARİFLER LİSTESİ
+            val normalizedDolap = dolapItems.map { it.trim().lowercase() }
             val recipes = listOf(
-                // Mercimek Çorbası tarifi
                 RecipeDetail(
                     imageRes = R.drawable.mercimek_corbasi,
                     title = "Mercimek Corbasi",
@@ -695,7 +658,6 @@ fun PratikTarifler(
                         "Çorbayı blenderdan geçirin ve 5 dakika daha pişirin."
                     )
                 ),
-                // Spoonful tarifi
                 RecipeDetail(
                     imageRes = R.drawable.spoonful,
                     title = "Spoonful",
@@ -738,7 +700,6 @@ fun PratikTarifler(
                         "Spoonful hazır. Afiyet olsun."
                     )
                 ),
-                // Tavuk Sote tarifi
                 RecipeDetail(
                     imageRes = R.drawable.tavuk_sote,
                     title = "Tavuk Sote",
@@ -775,163 +736,155 @@ fun PratikTarifler(
                         "İyice pişince tavuk sotenizi ocaktan alın ve servis edin. Tavuk sote hazır. Afiyet olsun!"
                     )
                 ),
-                // Arnavut Ciğeri tarifi
                 RecipeDetail(
                     imageRes = R.drawable.arnavut_cigeri,
                     title = "Arnavut Ciğeri",
-                    author = "Gordon Ramsay",
+                    author = "Jamie Oliver",
                     rating = 4.7,
                     ratingsCount = 512,
-                    description = "Arnavut Ciğeri, geleneksel Türk mutfağının en sevilen ciğer tariflerinden biridir.",
+                    description = "Arnavut Ciğeri, çıtır çıtır ve lezzetli klasik bir Türk ciğer yemeğidir.",
                     prepTime = "20 mins",
                     cookTime = "15 mins",
                     totalTime = "35 mins",
                     servings = "4",
                     calories = "280",
-                    fat = "15 g",
-                    carbs = "8 g",
-                    protein = "25 g",
+                    fat = "14 g",
+                    carbs = "10 g",
+                    protein = "28 g",
                     ingredients = listOf(
-                        "500 gram dana ciğeri (kuşbaşı doğranmış)",
-                        "2 yemek kaşığı sıvı yağ",
-                        "1 adet soğan (halka halka doğranmış)",
-                        "1 adet yeşil biber (halka halka doğranmış)",
-                        "1 adet kırmızı biber (halka halka doğranmış)",
+                        "600 gram ciğer",
+                        "1 çay bardağı un (bulamak için)",
                         "1 çay kaşığı tuz",
-                        "1 çay kaşığı karabiber",
-                        "1 çay kaşığı pul biber",
-                        "1/2 demet maydanoz (ince doğranmış)",
-                        "1 adet limon"
+                        "1 çay kaşığı karbonat",
+                        "1 su bardağı sıvı yağ",
+                        "1,5 çay kaşığı toz kırmızı biber",
+                        "1 çay kaşığı toz kişniş",
+                        "2 adet patates (küp doğranmış)",
+                        "2 su bardağı sıvı yağ (patatesi kızartmak için)",
+                        "---",
+                        "Sumaklı soğan için:",
+                        "1 adet kırmızı soğan (piyazlık doğranmış)",
+                        "1 çay kaşığı tuz",
+                        "1 çay kaşığı sumak",
+                        "1/2 demet doğranmış maydanoz"
                     ),
                     instructions = listOf(
-                        "Ciğerleri 30 dakika sütte bekletin ve süzün.",
-                        "Tavada sıvı yağı ısıtın ve ciğerleri yüksek ateşte soteleyin.",
-                        "Ciğerler pişince soğan ve biberleri ekleyin.",
-                        "Tuz, karabiber ve pul biberi ekleyin.",
-                        "Maydanoz ile süsleyin ve limon dilimleri ile servis edin."
+                        "Arnavut ciğeri yapımı için üzerinde bulunan zarı ayıkladığınız kuzu ciğerini, kuşbaşı büyüklüğünde kesin. Derin bir süzgece aldığınız doğranmış kuzu ciğerlerini kanının süzülmesi için bekletin.",
+                        "Kanını süzdürdüğünüz ciğerleri karbonat ve tuz eklediğiniz una bulayın. Ciğerlerin üzerindeki fazla unu almak için tekrar süzgeçten geçirin.",
+                        "Ciğerleri tavadaki ısınmış yağın içerisine koyun. Ciğerler pişmeye başladığında kırmızı toz biber ve toz kişniş ekleyin. Pişen ciğerlerin fazla yağını süzdürerek bir tabağa aktarın.",
+                        "Ayrı bir tavada kızdırdığınız yağda küp küp doğradığınız patatesleri kızartın ve ciğerlerin olduğu kaseye ekleyin.",
+                        "Piyazlık doğradığınız kırmızı soğanları, 1 çay kaşığı tuz ile ovarak öldürün. Üzerine sumak ve doğranmış maydanozu da ekledikten sonra güzelce karıştırın ve Arnavut ciğerlerinin olduğu kaseye ekleyip diğer malzemelerle birlikte güzelce harmanlayın.",
+                        "Arnavut ciğerini servis edeceğiniz tabağa alıp, sevdiklerinizle afiyetle tüketin!"
                     )
                 ),
-                // Lahmacun tarifi
                 RecipeDetail(
                     imageRes = R.drawable.lahmacun,
                     title = "Lahmacun",
                     author = "Gordon Ramsay",
-                    rating = 4.7,
+                    rating = 4.8,
                     ratingsCount = 512,
-                    description = "Geleneksel Türk mutfağının en sevilen lezzetlerinden biri olan lahmacun, ince hamur üzerine kıymalı harç ile hazırlanır.",
+                    description = "Lahmacun, kıyma, sebze ve otlarla doldurulmuş lezzetli bir Türk gözleme ekmeğidir. Popüler bir sokak yemeği ve Türk mutfağının favorisidir.",
                     prepTime = "30 mins",
-                    cookTime = "15 mins",
-                    totalTime = "45 mins",
+                    cookTime = "25 mins",
+                    totalTime = "55 mins",
                     servings = "4",
-                    calories = "280",
-                    fat = "12 g",
-                    carbs = "35 g",
-                    protein = "18 g",
+                    calories = "420",
+                    fat = "16 g",
+                    carbs = "48 g",
+                    protein = "20 g",
                     ingredients = listOf(
-                        "Lahmacun Hamuru:",
-                        "2 su bardağı un",
-                        "1 çay kaşığı tuz",
-                        "1 çay kaşığı şeker",
-                        "1 paket instant maya",
-                        "1 su bardağı ılık su",
-                        "---",
-                        "Lahmacun Harcı:",
-                        "300 gram yağlı dana kıyma",
-                        "2 adet soğan (ince doğranmış)",
-                        "2 adet domates (rendelenmiş)",
-                        "2 adet yeşil biber (ince doğranmış)",
-                        "1/2 demet maydanoz (ince doğranmış)",
-                        "2 yemek kaşığı domates salçası",
-                        "1 çay kaşığı tuz",
+                        "1 adet soğan",
+                        "2 adet domates",
+                        "250 gram kıyma",
+                        "1 yemek kaşığı biber salçası",
+                        "1 tatlı kaşığı tuz",
                         "1 çay kaşığı karabiber",
                         "1 çay kaşığı pul biber",
-                        "1 çay kaşığı sumak",
-                        "---",
-                        "Servis İçin:",
-                        "Sumaklı soğan",
-                        "Maydanoz",
-                        "Limon"
+                        "1/2 çay bardağı sıvı yağ",
+                        "1/2 demet maydanoz",
+                        "4 adet lahmacun hamuru"
                     ),
                     instructions = listOf(
-                        "Hamur için un, tuz, şeker ve mayayı karıştırın. Ilık suyu ekleyerek yumuşak bir hamur yoğurun.",
-                        "Hamuru 1 saat oda sıcaklığında mayalandırın.",
-                        "Harcı hazırlamak için tüm malzemeleri bir kapta iyice karıştırın.",
-                        "Mayalanan hamuru 8 parçaya bölün ve her birini açın.",
+                        "Lahmacun için önce mutfak robotuna kırmızı biberleri, yeşil biberleri, soğanları ve domatesleri ilave edin.",
+                        "Tamamen püre haline gelmeyecek şekilde çekin.",
+                        "Maydanozları da ekleyin ve 10 saniye kadar daha çekin.",
+                        "Domates salçası, biber salçası, sıvı yağ ve suyu ekleyin. Son olarak kıymayı ekleyerek güzelce yoğurun. Lahmacunun lezzetli olması için harcınızın cıvık bir kıvamda olması gerekir. Yeteri kadar cıvık bir kıvamda değilse, biraz su ekleyebilirsiniz.",
+                        "Hazırladığınız harcı vaktiniz varsa bir süre buzdolabında dinlendirin.",
+                        "Harcınız dinlenirken, hamurunuzu yapmaya başlayın. Suyu bir kaba dökün, üzerine tuz ve şekeri ilave ederek güzelce karıştırın. Azar azar da un ilave edin. Orta sertliğe ulaşana dek yoğurun.",
+                        "Hamuru bir silindir haline getirip eşit parçalara bölün. Aynı büyüklükte lahmacunlar yapabilmek için hamurlarınızın ağırlığı da eşit olmalıdır. Bezeleri bir süre dinlenmeye bırakın.",
+                        "Hazırladığınız bezeleri yemek tabağı büyüklüğünde açın. Mümkün olduğu kadar ince açmanız önemlidir. Bu sırada fırınınızı 250 derece fanlı ve alt-üst açık olacak şekilde açın. Güzelce ısıtın.",
                         "Açtığınız hamurların üzerine kıymalı harcı yayın. Fırının tabanına yağlı kağıt ile birlikte yerleştirin ve 7-10 dakika altı kızarana kadar pişirin.",
                         "Sumaklı soğan, maydanoz ve bol limonla servis edin.",
                         "Ev yapımı nefis lahmacun hazır. Afiyet olsun!"
                     )
                 ),
-                // Domates Çorbası tarifi
                 RecipeDetail(
                     imageRes = R.drawable.domates_corbasi,
                     title = "Domates Çorbası",
                     author = "Gordon Ramsay",
                     rating = 4.7,
                     ratingsCount = 512,
-                    description = "Domates Çorbası, taze domateslerle hazırlanan lezzetli bir çorbadır.",
+                    description = "Domates Çorbası, her mevsim için mükemmel olan kremalı bir Türk domates çorbasıdır.",
                     prepTime = "15 mins",
-                    cookTime = "25 mins",
-                    totalTime = "40 mins",
+                    cookTime = "30 mins",
+                    totalTime = "45 mins",
                     servings = "4",
                     calories = "150",
-                    fat = "8 g",
-                    carbs = "18 g",
-                    protein = "6 g",
+                    fat = "5 g",
+                    carbs = "22 g",
+                    protein = "4 g",
                     ingredients = listOf(
-                        "6 adet domates (rendelenmiş)",
-                        "1 adet soğan (ince doğranmış)",
-                        "2 yemek kaşığı sıvı yağ",
-                        "1 yemek kaşığı un",
-                        "1 çay kaşığı tuz",
-                        "1 çay kaşığı karabiber",
-                        "1 çay kaşığı şeker",
-                        "4 su bardağı su",
-                        "1/2 demet maydanoz (ince doğranmış)"
+                        "1 yemek kaşığı tereyağı",
+                        "2 çay bardağı sıcak süt",
+                        "5 adet büyük boy domates",
+                        "2 yemek kaşığı un",
+                        "4 su bardağı sıcak su (1 adet bulyon ile hazırlanmış)",
+                        "2 çay kaşığı tuz",
+                        "---",
+                        "Domates çorbasının servisi için:",
+                        "1 su bardağı rendelenmiş kaşar peyniri"
                     ),
                     instructions = listOf(
-                        "Tavada sıvı yağı ısıtın ve soğanları kavurun.",
-                        "Rendelenmiş domatesleri ekleyin ve 5 dakika pişirin.",
-                        "Un ekleyin ve karıştırın.",
-                        "Su, tuz, karabiber ve şekeri ekleyin.",
-                        "Kaynadıktan sonra kısık ateşte 20 dakika pişirin.",
-                        "Maydanoz ile süsleyin ve servis edin."
+                        "Domates çorbası için önce tereyağını tavada eritin.",
+                        "Unu ekleyip kokusu çıkana kadar kısık ateşte kavurun.",
+                        "Rendelenmiş domatesleri kavrulmuş un karışımına ekledikten sonra 5 dakika kadar pişirin.",
+                        "Üzerine sıcak suyunu ve tuzu ilave edin. Kesilmemesi için küçük bir cezvede ısıttığınız sütü azar azar ekleyip hızlıca karıştırın.",
+                        "Çorbayı kaynayana kadar orta ateşte ardından da kısık ateşte 15 dakika kadar pişirin. Daha pürüzsüz bir kıvam alması için blenderdan geçirin. Servis kaselerine aldığınız domates çorbasını, rendelenmiş kaşar peynir ilavesiyle sıcak olarak servis edin. Afiyet olsun!"
                     )
                 )
             )
             
-            // AKILLI FİLTRELEME MANTIĞI: ana malzeme mevcudiyetine göre tarifleri göster
-            val availableRecipes = recipes.filter { recipe ->
-                // Her tarif için ana malzemeleri tanımla (temel olan ana malzemeler)
-                val recipeIngredients = recipe.ingredients.map { it.trim().lowercase() }
-                val keyIngredients = when (recipe.title) {
-                    "Mercimek Corbasi" -> listOf("mercimek", "soğan", "havuç", "patates")
-                    "Spoonful" -> listOf("süt", "şeker", "un", "yumurta")
-                    "Tavuk Sote" -> listOf("tavuk", "soğan", "biber", "domates")
-                    "Arnavut Ciğeri" -> listOf("ciğer", "soğan", "biber")
-                    "Lahmacun" -> listOf("un", "kıyma", "soğan", "domates")
-                    "Domates Çorbası" -> listOf("domates", "soğan", "un")
-                    else -> recipeIngredients.take(4) // Varsayılan: ilk 4 malzeme ana malzeme olarak
-                }
-                
-                // TÜM ana malzemelerin mevcut olup olmadığını kontrol et
-                val hasAllKeyIngredients = keyIngredients.all { keyIngredient ->
-                    normalizedDolap.any { dolapItem -> dolapItem.contains(keyIngredient) }
-                }
-                
-                // TÜM ana malzemeler mevcutsa tarifi göster
-                hasAllKeyIngredients
-            }
-            
-            // FİLTRELENMİŞ TARİFLERİ GÖSTER
-            if (availableRecipes.isNotEmpty()) {
-                availableRecipes.forEach { recipe ->
-                    RecipeCard(
-                        recipe = recipe,
-                        onClick = { onRecipeClick(recipe) }
-                    )
+            // Akıllı filtreleme mantığı: ana malzeme mevcudiyetine göre tarifleri göster
+            val filteredRecipes = if (normalizedDolap.isNotEmpty()) {
+                recipes.filter { recipe ->
+                    val recipeIngredients = recipe.ingredients
+                        .filter { it.isNotBlank() && !it.contains(":") && !it.contains("---") }
+                        .map { it.replace(Regex("\\(.*?\\)|[0-9]+|adet|yemek kaşığı|su bardağı|çay bardağı|tatlı kaşığı|gram|büyük boy|küçük boy|iri doğranmış|doğranmış|küp|küp doğranmış|bulamak için|servisi için|üzeri için|için|paket|kutu|dilim|büyük|küçük|orta|boy|\\s+"), "").trim().lowercase() }
+                    
+                    // Her tarif için ana malzemeleri tanımla (temel olan ana malzemeler)
+                    val keyIngredients = when (recipe.title) {
+                        "Spoonful" -> listOf("süt", "un", "şeker", "yumurta", "krema", "tereyağı")
+                        "Tavuk Sote" -> listOf("tavuk", "soğan", "sıvı yağ", "tuz", "yeşil biber", "domates")
+                        "Arnavut Ciğeri" -> listOf("ciğer", "un", "sıvı yağ", "tuz", "patates", "soğan")
+                        "Lahmacun" -> listOf("soğan", "domates", "kıyma", "sıvı yağ", "un", "biber salçası")
+                        "Mercimek Corbasi" -> listOf("mercimek", "soğan", "sıvı yağ", "tuz", "havuç", "patates")
+                        "Domates Çorbası" -> listOf("domates", "un", "süt", "tuz", "tereyağı", "kaşar peyniri")
+                        else -> recipeIngredients.take(4) // Varsayılan: ilk 4 malzeme ana malzeme olarak
+                    }
+                    
+                    // TÜM ana malzemelerin mevcut olup olmadığını kontrol et
+                    val availableKeyIngredients = keyIngredients.count { ing ->
+                        normalizedDolap.any { dolap -> dolap.contains(ing) || ing.contains(dolap) }
+                    }
+                    
+                    // TÜM ana malzemeler mevcutsa tarifi göster
+                    availableKeyIngredients == keyIngredients.size
                 }
             } else {
+                recipes
+            }
+            
+            if (filteredRecipes.isEmpty() && dolapItems.isNotEmpty()) {
                 // Malzeme var ama eşleşen tarif yoksa mesaj göster
                 Card(
                     shape = RoundedCornerShape(16.dp),
@@ -947,14 +900,14 @@ fun PratikTarifler(
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         Icon(
-                            painter = painterResource(id = R.drawable.ic_cook),
-                            contentDescription = "Tarif",
+                            painter = painterResource(id = R.drawable.ic_market),
+                            contentDescription = "Market",
                             tint = Color(0xFFE11932),
                             modifier = Modifier.size(48.dp)
                         )
                         Spacer(modifier = Modifier.height(16.dp))
                         Text(
-                            text = "Uygun tarif bulunamadı",
+                            text = "Yeterli malzeme yok",
                             fontWeight = FontWeight.Bold,
                             fontSize = 18.sp,
                             color = Color.Black,
@@ -962,7 +915,7 @@ fun PratikTarifler(
                         )
                         Spacer(modifier = Modifier.height(8.dp))
                         Text(
-                            text = "Dolabınızdaki malzemelerle yapabileceğiniz tarif bulunmuyor. Daha fazla malzeme ekleyin.",
+                            text = "Tariflerimizden herhangi birini yapmak için daha fazla malzemeye ihtiyacınız var. Dolabınıza daha fazla ürün ekleyin!",
                             fontSize = 14.sp,
                             color = Color.Gray,
                             textAlign = androidx.compose.ui.text.style.TextAlign.Center
@@ -986,6 +939,24 @@ fun PratikTarifler(
                                 color = Color.White,
                                 fontSize = 16.sp,
                                 fontWeight = FontWeight.Medium
+                            )
+                        }
+                    }
+                }
+            } else {
+                LazyRow(
+                    contentPadding = PaddingValues(horizontal = 4.dp),
+                    horizontalArrangement = Arrangement.spacedBy(16.dp)
+                ) {
+                    items(filteredRecipes) { recipe ->
+                        Box(modifier = Modifier.clickable { onRecipeClick(recipe) }) {
+                    PopularTodayCard(
+                                imageRes = recipe.imageRes,
+                                rating = recipe.rating.toFloat(),
+                                chefImageRes = R.drawable.chef,
+                                title = recipe.title,
+                                chef = recipe.author,
+                                time = recipe.prepTime
                             )
                         }
                     }

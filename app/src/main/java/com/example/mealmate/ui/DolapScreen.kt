@@ -35,57 +35,26 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.shape.CircleShape
 import androidx.activity.compose.BackHandler
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.border
-import androidx.compose.foundation.lazy.Box
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 
-/**
- * DOLAP EKRANI (DOLAP SCREEN)
- * 
- * Bu ekran kullanıcının dolabındaki mevcut malzemeleri gösterdiği ve yönettiği
- * ana dolap arayüzüdür.
- * 
- * ANA ÖZELLİKLER:
- * - Dolap malzemelerini listeleme: Kullanıcının sahip olduğu tüm malzemeler
- * - Malzeme silme: Dolaptan malzeme çıkarma
- * - Boş dolap durumu: Malzeme yoksa uygun mesaj gösterme
- * - Market yönlendirmesi: Malzeme eklemek için markete gitme
- * 
- * VERİ AKIŞI:
- * 1. NavigationScreen'den dolapItems listesi alınır
- * 2. Malzemeler ekranda listelenir
- * 3. Kullanıcı malzeme silebilir (onRemoveItem callback)
- * 4. Boş dolap durumunda markete yönlendirme seçeneği
- * 
- * DOLAP YÖNETİMİ:
- * - Malzemeler NavigationScreen'de merkezi olarak yönetilir
- * - MarketScreen'den eklenen malzemeler burada görünür
- * - Silinen malzemeler NavigationScreen'deki listeyi günceller
- * - Bu sayede tüm ekranlar arasında tutarlılık sağlanır
- */
 @Composable
 fun DolapScreen(
-    onBack: () -> Unit, // Ana ekrana geri dönmek için callback
-    selectedTab: Int, // Aktif sekme bilgisi
-    onTabSelected: (Int) -> Unit, // Sekme değiştirme callback'i
+    onBack: () -> Unit,
+    selectedTab: Int,
+    onTabSelected: (Int) -> Unit,
     modifier: Modifier = Modifier,
-    dolapItems: List<String> = emptyList(), // Kullanıcının dolabındaki malzemeler
-    onRemoveItem: (String) -> Unit = {} // Malzeme silme callback'i
+    dolapItems: List<String>,
+    onRemoveItem: (String) -> Unit = {}
 ) {
-    // Geri tuşu kontrolü
     BackHandler {
         onBack()
     }
-    
     // Sadece alt navigasyon çubuğu için MainScaffold kullan, selamlama veya eylemler için değil
     MainScaffold(
         selectedTab = selectedTab,
         onTabSelected = onTabSelected,
-        showBack = false, // Dolap ekranında geri butonu gösterme
-        modifier = modifier
+        showBack = false,
+        modifier = modifier,
+        showGreeting = false
     ) {
         Column(
             modifier = Modifier
@@ -95,13 +64,10 @@ fun DolapScreen(
             // Özel başlık: geri butonu + Dolap başlığı
             Row(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .statusBarsPadding()
-                    .padding(16.dp),
+                    .fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                // Geri butonu
                 Icon(
                     painter = painterResource(id = R.drawable.ic_left_arrow),
                     contentDescription = "Geri",
@@ -112,7 +78,6 @@ fun DolapScreen(
                         .clickable { onBack() }
                         .padding(4.dp)
                 )
-                // Ekran başlığı
                 Text(
                     text = "Dolap",
                     fontWeight = FontWeight.Bold,
@@ -121,172 +86,132 @@ fun DolapScreen(
                 )
                 Spacer(modifier = Modifier.size(40.dp))
             }
-            
             // İçerik alanı (boş durum veya dolap öğeleri)
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(horizontal = 16.dp)
                     .verticalScroll(rememberScrollState())
+                    .padding(horizontal = 24.dp, vertical = 8.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                // DOLAP BOŞ KONTROLÜ
                 if (dolapItems.isEmpty()) {
-                    // Boş dolap durumu - kullanıcıyı markete yönlendir
-                    Card(
-                        shape = RoundedCornerShape(16.dp),
-                        colors = CardDefaults.cardColors(containerColor = Color(0xFFFFF3F6)),
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(vertical = 20.dp)
-                    ) {
-                        Column(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(24.dp),
-                            horizontalAlignment = Alignment.CenterHorizontally
-                        ) {
-                            // Market ikonu
-                            Icon(
-                                painter = painterResource(id = R.drawable.ic_market),
-                                contentDescription = "Market",
-                                tint = Color(0xFFE11932),
-                                modifier = Modifier.size(48.dp)
-                            )
-                            Spacer(modifier = Modifier.height(16.dp))
-                            // Başlık
-                            Text(
-                                text = "Dolabınız boş",
-                                fontWeight = FontWeight.Bold,
-                                fontSize = 18.sp,
-                                color = Color.Black,
-                                textAlign = androidx.compose.ui.text.style.TextAlign.Center
-                            )
-                            Spacer(modifier = Modifier.height(8.dp))
-                            // Açıklama
-                            Text(
-                                text = "Dolabınıza malzeme eklemek için markete gidin ve istediğiniz malzemeleri seçin",
-                                fontSize = 14.sp,
-                                color = Color.Gray,
-                                textAlign = androidx.compose.ui.text.style.TextAlign.Center
-                            )
-                            Spacer(modifier = Modifier.height(20.dp))
-                            // Market butonu
-                            Button(
-                                onClick = { onTabSelected(1) }, // Market sekmesine geç
-                                shape = RoundedCornerShape(50),
-                                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFE11932)),
-                                modifier = Modifier.height(48.dp)
-                            ) {
-                                Icon(
-                                    painter = painterResource(id = R.drawable.ic_market),
-                                    contentDescription = null,
-                                    tint = Color.White,
-                                    modifier = Modifier.size(20.dp)
-                                )
-                                Spacer(modifier = Modifier.width(8.dp))
-                                Text(
-                                    text = "Markete Git",
-                                    color = Color.White,
-                                    fontSize = 16.sp,
-                                    fontWeight = FontWeight.Medium
-                                )
-                            }
-                        }
-                    }
-                } else {
-                    // DOLAP İÇERİĞİ GÖSTERİMİ
-                    // Başlık
                     Text(
-                        text = "Dolabınızdaki Malzemeler",
+                        text = "Mevcut Malzemeler",
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 22.sp,
+                        color = Color.Black,
+                        modifier = Modifier.padding(bottom = 24.dp)
+                    )
+                    Spacer(modifier = Modifier.height(12.dp))
+                    Image(
+                        painter = painterResource(id = R.drawable.my_grocery_list),
+                        contentDescription = "Alışveriş İllüstrasyonu",
+                        modifier = Modifier
+                            .height(220.dp)
+                            .padding(bottom = 16.dp)
+                    )
+                    Text(
+                        text = "Mevcut alışveriş listeniz yok",
                         fontWeight = FontWeight.Bold,
                         fontSize = 20.sp,
                         color = Color.Black,
-                        modifier = Modifier.padding(vertical = 16.dp)
+                        modifier = Modifier.padding(top = 8.dp, bottom = 8.dp)
                     )
-                    
-                    // Malzeme listesi
-                    LazyColumn(
-                        verticalArrangement = Arrangement.spacedBy(8.dp)
-                    ) {
-                        items(dolapItems) { item ->
-                            // MALZEME KARTI
-                            Card(
-                                shape = RoundedCornerShape(12.dp),
-                                colors = CardDefaults.cardColors(containerColor = Color.White),
-                                border = BorderStroke(1.dp, Color(0xFFE0E0E0)),
-                                modifier = Modifier.fillMaxWidth()
+                    Text(
+                        text = "Dolabınızda her bir şey YOK!",
+                        color = Color.Gray,
+                        fontSize = 15.sp,
+                        modifier = Modifier.padding(bottom = 32.dp)
+                    )
+                } else {
+                    dolapItems.forEach { item ->
+                        Card(
+                            shape = RoundedCornerShape(16.dp),
+                            elevation = CardDefaults.cardElevation(2.dp),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(vertical = 6.dp)
+                        ) {
+                            Row(
+                                modifier = Modifier
+                                    .background(Color.White)
+                                    .padding(12.dp),
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.SpaceBetween
                             ) {
-                                Row(
+                                val imageRes = when (item.lowercase()) {
+                                    "apple" -> R.drawable.elma
+                                    "avocado" -> R.drawable.avakado
+                                    "banana" -> R.drawable.muz
+                                    "blueberry" -> R.drawable.blueberry
+                                    "cherry" -> R.drawable.cherry
+                                    "grapefruit" -> R.drawable.grape
+                                    "kiwi" -> R.drawable.kivi
+                                    "lemon" -> R.drawable.lemon
+                                    "ananas" -> R.drawable.ananas
+                                    "kaşar peyniri" -> R.drawable.kasar
+                                    "krema" -> R.drawable.krema
+                                    "süt" -> R.drawable.sut
+                                    "sütlü çikolata" -> R.drawable.cikolatali_sut
+                                    "tereyağı" -> R.drawable.tereyag
+                                    "yumurta" -> R.drawable.yumurta
+                                    "biber salçası" -> R.drawable.biber_salcasi
+                                    "bulyon" -> R.drawable.suyu_bulyon
+                                    "karabiber" -> R.drawable.karabiber
+                                    "karbonat" -> R.drawable.karbonat
+                                    "kuru nane" -> R.drawable.kuru_nane
+                                    "pul biber" -> R.drawable.pulbiber
+                                    "sumak" -> R.drawable.sumak
+                                    "toz kişniş" -> R.drawable.toz_kesnes
+                                    "toz şeker" -> R.drawable.toz_seker
+                                    "tuz" -> R.drawable.tuz
+                                    "vanilin" -> R.drawable.vanilin
+                                    "kek" -> R.drawable.kek
+                                    "lahmacun hamuru" -> R.drawable.lahmacun_hamuru
+                                    "un" -> R.drawable.un
+                                    "sıvı yağ" -> R.drawable.yag
+                                    "ciğer" -> R.drawable.ciger
+                                    "tavuk göğsü" -> R.drawable.tavuk
+                                    "yağlı dana kıyma" -> R.drawable.kiyma
+                                    "domates" -> R.drawable.domates
+                                    "domates salçası" -> R.drawable.domates_salcasi
+                                    "havuç" -> R.drawable.havuc
+                                    "kırmızı biber" -> R.drawable.kirmizi_biber
+                                    "kırmızı soğan" -> R.drawable.kirmizi_sogan
+                                    "maydanoz" -> R.drawable.maydanoz
+                                    "patates" -> R.drawable.patates
+                                    "soğan" -> R.drawable.sogan
+                                    "toz kırmızı biber" -> R.drawable.toz_kirmizibiber
+                                    "yeşil biber" -> R.drawable.yesil_biber
+                                    "nişasta" -> R.drawable.nisasta
+                                    "su" -> R.drawable.su
+                                    "kırmızı mercimek" -> R.drawable.kirmizi_mercimek
+                                    "sarı mercimek" -> R.drawable.sari_mercimek
+                                    else -> R.drawable.ic_launcher_foreground
+                                }
+                                Image(
+                                    painter = painterResource(id = imageRes),
+                                    contentDescription = item,
                                     modifier = Modifier
-                                        .fillMaxWidth()
-                                        .padding(16.dp),
-                                    verticalAlignment = Alignment.CenterVertically
-                                ) {
-                                    // Malzeme ikonu (basit daire)
-                                    Box(
-                                        modifier = Modifier
-                                            .size(40.dp)
-                                            .background(Color(0xFFFFF3F6), shape = CircleShape),
-                                        contentAlignment = Alignment.Center
-                                    ) {
-                                        Icon(
-                                            painter = painterResource(id = R.drawable.ic_list),
-                                            contentDescription = null,
-                                            tint = Color(0xFFE11932),
-                                            modifier = Modifier.size(20.dp)
-                                        )
-                                    }
-                                    
-                                    Spacer(modifier = Modifier.width(12.dp))
-                                    
-                                    // Malzeme adı
-                                    Text(
-                                        text = item.replaceFirstChar { it.uppercase() }, // İlk harfi büyük yap
-                                        fontWeight = FontWeight.Medium,
-                                        fontSize = 16.sp,
-                                        color = Color.Black,
-                                        modifier = Modifier.weight(1f)
-                                    )
-                                    
-                                    // Silme butonu
+                                        .background(Color.White, shape = RoundedCornerShape(8.dp))
+                                        .padding(4.dp)
+                                        .size(40.dp)
+                                )
+                                Text(
+                                    text = item.replaceFirstChar { it.uppercase() },
+                                    color = Color.Black,
+                                    fontWeight = FontWeight.Medium,
+                                    fontSize = 18.sp,
+                                    modifier = Modifier.weight(1f).padding(start = 16.dp)
+                                )
+                                IconButton(onClick = { onRemoveItem(item) }) {
                                     Icon(
-                                        painter = painterResource(id = R.drawable.ic_pen),
-                                        contentDescription = "Sil",
-                                        tint = Color(0xFFE11932),
-                                        modifier = Modifier
-                                            .size(24.dp)
-                                            .clickable { onRemoveItem(item) } // Malzemeyi sil
+                                        imageVector = Icons.Default.Delete,
+                                        contentDescription = "Kaldır",
+                                        tint = Color(0xFFE11932)
                                     )
                                 }
                             }
-                        }
-                    }
-                    
-                    // Alt bilgi kartı
-                    Card(
-                        shape = RoundedCornerShape(16.dp),
-                        colors = CardDefaults.cardColors(containerColor = Color(0xFFF8F8F8)),
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(vertical = 16.dp)
-                    ) {
-                        Column(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(16.dp)
-                        ) {
-                            Text(
-                                text = "💡 İpucu",
-                                fontWeight = FontWeight.Bold,
-                                fontSize = 16.sp,
-                                color = Color.Black
-                            )
-                            Spacer(modifier = Modifier.height(8.dp))
-                            Text(
-                                text = "Ana ekranda bu malzemelerle yapabileceğiniz tarifler gösterilecektir.",
-                                fontSize = 14.sp,
-                                color = Color.Gray
-                            )
                         }
                     }
                 }

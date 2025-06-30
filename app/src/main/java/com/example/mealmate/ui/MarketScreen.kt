@@ -51,50 +51,18 @@ val groceryColors = listOf(
     Color(0xFFFFF3F6), Color(0xFFE6F7E6), Color(0xFFFFF9E6), Color(0xFFE6F0FF), Color(0xFFFFE6F0), Color(0xFFF6E6FF)
 )
 
-/**
- * MARKET EKRANI (MARKET SCREEN)
- * 
- * Bu ekran kullanıcının malzeme seçimi yapabileceği ve alışveriş listesi oluşturabileceği
- * ana market arayüzüdür.
- * 
- * ANA ÖZELLİKLER:
- * - Kategori bazlı malzeme seçimi: Meyve, Sebzeler, Süt & Yumurta, Et, Baharatlar, vb.
- * - Arama fonksiyonu: Malzeme adına göre filtreleme
- * - Çoklu seçim: Birden fazla malzeme seçebilme
- * - Onay sistemi: Seçilen malzemeleri dolaba ekleme
- * 
- * VERİ AKIŞI:
- * 1. Kullanıcı kategoriler arasında geçiş yapar
- * 2. Malzemeleri seçer (çoklu seçim mümkün)
- * 3. "Seçimi Onayla" butonuna basar
- * 4. Seçilen malzemeler dolapItems listesine eklenir
- * 5. Kullanıcı otomatik olarak Dolap ekranına yönlendirilir
- * 
- * MALZEME KATEGORİLERİ:
- * - Meyve: Apple, Avocado, Banana, Blueberry, Cherry, vb.
- * - Sebzeler: Domates, Havuç, Biber, Soğan, vb.
- * - Süt & Yumurta: Kaşar peyniri, Krema, Süt, Yumurta, vb.
- * - Et: Ciğer, Tavuk göğsü, Dana kıyma
- * - Baharatlar: Biber salçası, Karabiber, Tuz, vb.
- * - Tahıllar: Kek, Lahmacun hamuru, Un
- * - Yağlar: Sıvı yağ
- * - Diğerleri: Nişasta, Su, Mercimek
- */
 @Composable
 fun MarketScreen(
-    onConfirm: (List<String>) -> Unit, // Seçilen malzemeleri dolaba eklemek için callback
-    onBack: () -> Unit // Ana ekrana geri dönmek için callback
+    onConfirm: (List<String>) -> Unit,
+    onBack: () -> Unit
 ) {
-    // Geri tuşu kontrolü
     BackHandler {
         onBack()
     }
-    
-    // DURUM YÖNETİMİ
-    var selectedCategory by remember { mutableStateOf(groceryCategories.first()) } // Seçili kategori
-    var searchQuery by remember { mutableStateOf(TextFieldValue("")) } // Arama metni
-    val items = groceryData[selectedCategory] ?: emptyList() // Seçili kategorideki malzemeler
-    var selectedItems by remember { mutableStateOf(setOf<String>()) } // Seçilen malzemeler
+    var selectedCategory by remember { mutableStateOf(groceryCategories.first()) }
+    var searchQuery by remember { mutableStateOf(TextFieldValue("")) }
+    val items = groceryData[selectedCategory] ?: emptyList()
+    var selectedItems by remember { mutableStateOf(setOf<String>()) }
 
     Column(modifier = Modifier
         .fillMaxSize()
@@ -109,10 +77,9 @@ fun MarketScreen(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            // Geri butonu
             Icon(
                 painter = painterResource(id = R.drawable.ic_left_arrow),
-                contentDescription = "Geri",
+                contentDescription = "Back",
                 tint = Color.Black,
                 modifier = Modifier
                     .size(32.dp)
@@ -120,7 +87,6 @@ fun MarketScreen(
                     .clickable { onBack() }
                     .padding(4.dp)
             )
-            // Ekran başlığı
             Text(
                 text = "Market",
                 fontWeight = FontWeight.Bold,
@@ -135,6 +101,13 @@ fun MarketScreen(
             .padding(horizontal = 16.dp, vertical = 8.dp)
             .verticalScroll(rememberScrollState())
         ) {
+            //Text(
+            //   text = "Market",
+            //    fontWeight = FontWeight.Bold,
+            //   fontSize = 22.sp,
+            //   color = Color.Black,
+            //   modifier = Modifier.padding(bottom = 12.dp)
+            // )
             // Arama çubuğu
             Surface(
                 shape = RoundedCornerShape(12.dp),
@@ -148,19 +121,17 @@ fun MarketScreen(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier.fillMaxSize().padding(horizontal = 12.dp)
                 ) {
-                    // Arama ikonu
                     Icon(
                         painter = painterResource(id = R.drawable.ic_search),
-                        contentDescription = "Ara",
+                        contentDescription = "Search",
                         tint = Color(0xFF888888),
                         modifier = Modifier.size(22.dp)
                     )
                     Spacer(modifier = Modifier.width(8.dp))
-                    // Arama metin alanı
                     androidx.compose.material3.TextField(
                         value = searchQuery,
-                        onValueChange = { searchQuery = it }, // Arama metnini güncelle
-                        placeholder = { Text("Malzeme eklemek için ara", color = Color(0xFF888888), fontSize = 15.sp) },
+                        onValueChange = { searchQuery = it },
+                        placeholder = { Text("Search to add ingredients", color = Color(0xFF888888), fontSize = 15.sp) },
                         singleLine = true,
                         modifier = Modifier.weight(1f),
                         colors = TextFieldDefaults.colors(
@@ -170,17 +141,15 @@ fun MarketScreen(
                             focusedIndicatorColor = Color.Transparent
                         )
                     )
-                    // Kamera ikonu (gelecekte barkod okuma için)
                     Icon(
                         painter = painterResource(id = R.drawable.ic_camera),
-                        contentDescription = "Kamera",
+                        contentDescription = "Camera",
                         tint = Color(0xFFE11932),
                         modifier = Modifier.size(22.dp)
                     )
                 }
             }
             Spacer(modifier = Modifier.height(16.dp))
-            
             // Kategori sekmeleri
             Row(
                 modifier = Modifier
@@ -188,16 +157,15 @@ fun MarketScreen(
                     .fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                // Her kategori için sekme oluştur
                 groceryCategories.forEach { category ->
                     val selected = category == selectedCategory
                     Surface(
                         shape = RoundedCornerShape(24.dp),
-                        color = if (selected) Color(0xFFE11932) else Color.White, // Seçili kategori kırmızı
+                        color = if (selected) Color(0xFFE11932) else Color.White,
                         border = if (selected) null else androidx.compose.foundation.BorderStroke(1.dp, Color(0xFFE11932)),
                         modifier = Modifier
                             .height(36.dp)
-                            .clickable { selectedCategory = category } // Kategori seçimi
+                            .clickable { selectedCategory = category }
                     ) {
                         Box(contentAlignment = Alignment.Center, modifier = Modifier.padding(horizontal = 18.dp)) {
                             Text(
@@ -211,19 +179,15 @@ fun MarketScreen(
                 }
             }
             Spacer(modifier = Modifier.height(16.dp))
-            
             // Malzeme ızgarası
             LazyVerticalGrid(
-                columns = GridCells.Fixed(3), // 3 sütunlu ızgara
+                columns = GridCells.Fixed(3),
                 modifier = Modifier.weight(1f),
                 verticalArrangement = Arrangement.spacedBy(12.dp),
                 horizontalArrangement = Arrangement.spacedBy(12.dp)
             ) {
-                // Arama filtresine göre malzemeleri göster
                 items(items.filter { it.contains(searchQuery.text, ignoreCase = true) }) { item ->
-                    val isSelected = selectedItems.contains(item) // Malzeme seçili mi?
-                    
-                    // Malzeme resmi için mapping
+                    val isSelected = selectedItems.contains(item)
                     val imageRes = when (item.lowercase()) {
                         "apple" -> R.drawable.elma
                         "avocado" -> R.drawable.avakado
@@ -274,15 +238,12 @@ fun MarketScreen(
                         "sarı mercimek" -> R.drawable.sari_mercimek
                         else -> R.drawable.ic_launcher_foreground
                     }
-                    
-                    // MALZEME KARTI
                     Box(
                         modifier = Modifier
                             .aspectRatio(0.8f)
                             .clip(RoundedCornerShape(16.dp))
                             .background(Color.White)
                             .clickable {
-                                // Malzeme seçimi/seçim kaldırma
                                 selectedItems = if (isSelected) selectedItems - item else selectedItems + item
                             }
                     ) {
@@ -294,7 +255,6 @@ fun MarketScreen(
                                     .weight(1f)
                                     .background(Color.White, shape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp))
                             ) {
-                                // Malzeme resmi
                                 Image(
                                     painter = painterResource(id = imageRes),
                                     contentDescription = item,
@@ -302,7 +262,6 @@ fun MarketScreen(
                                         .size(64.dp)
                                         .align(Alignment.Center)
                                 )
-                                // Seçim göstergesi (sağ üst köşe)
                                 Box(
                                     modifier = Modifier
                                         .align(Alignment.TopEnd)
@@ -313,10 +272,9 @@ fun MarketScreen(
                                     contentAlignment = Alignment.Center
                                 ) {
                                     if (isSelected) {
-                                        // Seçili ise tik işareti göster
                                         Icon(
                                             painter = painterResource(id = R.drawable.ic_tick),
-                                            contentDescription = "Seçili",
+                                            contentDescription = "Selected",
                                             tint = Color(0xFFE11932),
                                             modifier = Modifier.size(16.dp)
                                         )
@@ -332,7 +290,7 @@ fun MarketScreen(
                                 contentAlignment = Alignment.Center
                             ) {
                                 Text(
-                                    text = item.replaceFirstChar { it.uppercase() }, // İlk harfi büyük yap
+                                    text = item.replaceFirstChar { it.uppercase() },
                                     color = Color.Black,
                                     fontWeight = FontWeight.Bold,
                                     fontSize = 16.sp
@@ -342,15 +300,13 @@ fun MarketScreen(
                     }
                 }
             }
-            
             // Onay butonu
             Button(
                 onClick = {
-                    // Seçilen malzemeleri dolaba ekle ve ekranı temizle
                     onConfirm(selectedItems.toList())
-                    selectedItems = emptySet() // Seçimleri temizle
+                    selectedItems = emptySet()
                 },
-                enabled = selectedItems.isNotEmpty(), // Sadece malzeme seçiliyse aktif
+                enabled = selectedItems.isNotEmpty(),
                 shape = RoundedCornerShape(12.dp),
                 colors = ButtonDefaults.buttonColors(
                     containerColor = if (selectedItems.isNotEmpty()) Color(0xFFE11932) else Color(0xFF888888)

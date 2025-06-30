@@ -37,80 +37,37 @@ import androidx.compose.runtime.setValue
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.activity.compose.BackHandler
 
-/**
- * TARİF DETAY EKRANI (RECIPE DETAIL SCREEN)
- * 
- * Bu ekran seçilen tarifin tüm detaylarını gösterdiği kapsamlı tarif görüntüleme
- * arayüzüdür. Kullanıcıya tarif hakkında tam bilgi verir ve adım adım yapılışını gösterir.
- * 
- * ANA ÖZELLİKLER:
- * - Tarif görseli: Büyük başlık resmi
- * - Tarif bilgileri: Başlık, yazar, puan, açıklama
- * - Zaman bilgileri: Hazırlık, pişirme, toplam süre
- * - Besin değerleri: Kalori, yağ, karbonhidrat, protein
- * - Malzemeler listesi: Tüm gerekli malzemeler
- * - Adım adım talimatlar: Resimli yapılış adımları
- * - Sekme sistemi: Malzemeler ve Talimatlar arası geçiş
- * 
- * EKRAN YAPISI:
- * 1. Üst kısım: Tarif resmi + geri/paylaş/yer imi butonları
- * 2. Tarif bilgileri: Kırmızı kart içinde başlık ve yazar
- * 3. Puan ve MealMate Pick: Yıldızlar ve özel rozet
- * 4. Açıklama: Tarif hakkında genel bilgi
- * 5. Zaman bilgileri: Kırmızı alt çizgili bölüm
- * 6. Besin değerleri: Gri arka planlı tablo
- * 7. Sekmeler: Malzemeler ve Talimatlar
- * 8. İçerik: Seçili sekmeye göre malzeme listesi veya adım adım talimatlar
- * 
- * RESİM SİSTEMİ:
- * - Her tarif için özel adım resimleri tanımlanmıştır
- * - Resimler tarif adına göre dinamik olarak yüklenir
- * - Eğer adım resmi yoksa ana tarif resmi kullanılır
- * 
- * VERİ AKIŞI:
- * 1. MainScreen'den tarif seçilir
- * 2. RecipeDetail parametreleri ile bu ekran açılır
- * 3. Kullanıcı malzemeler ve talimatlar arası geçiş yapar
- * 4. Geri butonu ile ana ekrana dönülür
- */
 @Composable
 fun RecipeDetailScreen(
-    imageRes: Int, // Tarif ana resmi
-    title: String, // Tarif başlığı
-    author: String, // Tarif yazarı
-    rating: Double, // Tarif puanı (1-5 arası)
-    ratingsCount: Int, // Değerlendirme sayısı
-    description: String, // Tarif açıklaması
-    prepTime: String, // Hazırlık süresi
-    cookTime: String, // Pişirme süresi
-    totalTime: String, // Toplam süre
-    servings: String, // Porsiyon sayısı
-    calories: String, // Kalori değeri
-    fat: String, // Yağ miktarı
-    carbs: String, // Karbonhidrat miktarı
-    protein: String, // Protein miktarı
-    onBack: () -> Unit, // Ana ekrana geri dönme callback'i
-    ingredients: List<String>, // Malzeme listesi
-    instructions: List<String> // Yapılış adımları
+    imageRes: Int,
+    title: String,
+    author: String,
+    rating: Double,
+    ratingsCount: Int,
+    description: String,
+    prepTime: String,
+    cookTime: String,
+    totalTime: String,
+    servings: String,
+    calories: String,
+    fat: String,
+    carbs: String,
+    protein: String,
+    onBack: () -> Unit,
+    ingredients: List<String>,
+    instructions: List<String>
 ) {
-    // Geri tuşu kontrolü
     BackHandler {
         onBack()
     }
-    
-    // DURUM YÖNETİMİ
     var selectedTab by remember { mutableStateOf(0) } // 0: Malzemeler, 1: Talimatlar
-    
-    // ANA EKRAN İÇERİĞİ
     Column(
         modifier = Modifier
             .fillMaxSize()
             .background(Color.White)
             .verticalScroll(rememberScrollState())
     ) {
-        // ÜST KISIM: TARİF RESMİ VE BUTONLAR
         Box {
-            // Tarif ana resmi
             Image(
                 painter = painterResource(id = imageRes),
                 contentDescription = title,
@@ -120,8 +77,6 @@ fun RecipeDetailScreen(
                     .height(220.dp)
                     .clip(RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp))
             )
-            
-            // Üst butonlar satırı (geri, paylaş, yer imi)
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -129,10 +84,9 @@ fun RecipeDetailScreen(
                     .padding(16.dp),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                // Geri butonu
                 Icon(
                     painter = painterResource(id = R.drawable.ic_left_arrow),
-                    contentDescription = "Geri",
+                    contentDescription = "Back",
                     tint = Color.Black,
                     modifier = Modifier
                         .size(32.dp)
@@ -140,13 +94,10 @@ fun RecipeDetailScreen(
                         .clickable { onBack() }
                         .padding(4.dp)
                 )
-                
-                // Sağ butonlar (paylaş ve yer imi)
                 Row {
-                    // Paylaş butonu
                     Icon(
                         painter = painterResource(id = R.drawable.ic_share),
-                        contentDescription = "Paylaş",
+                        contentDescription = "Share",
                         tint = Color.Black,
                         modifier = Modifier
                             .size(28.dp)
@@ -154,10 +105,9 @@ fun RecipeDetailScreen(
                             .padding(4.dp)
                     )
                     Spacer(modifier = Modifier.width(12.dp))
-                    // Yer imi butonu
                     Icon(
                         painter = painterResource(id = R.drawable.ic_bookmark),
-                        contentDescription = "Yer İmi",
+                        contentDescription = "Bookmark",
                         tint = Color.Black,
                         modifier = Modifier
                             .size(28.dp)
@@ -167,15 +117,13 @@ fun RecipeDetailScreen(
                 }
             }
         }
-        
         Spacer(modifier = Modifier.height(8.dp))
-        
         // Tarif bilgileri için kırmızı yuvarlak dikdörtgen
         Box(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp)
-                .offset(y = (-32).dp) // Resmin üzerine bindir
+                .offset(y = (-32).dp)
         ) {
             Column(
                 modifier = Modifier
@@ -204,16 +152,13 @@ fun RecipeDetailScreen(
                 )
             }
         }
-        
         Spacer(modifier = Modifier.height(8.dp))
-        
         // Puan satırı
         Row(
             modifier = Modifier.fillMaxWidth().padding(horizontal = 24.dp),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            // Yıldız puanları
             Row(verticalAlignment = Alignment.CenterVertically) {
                 repeat(rating.toInt()) {
                     Icon(
@@ -226,31 +171,24 @@ fun RecipeDetailScreen(
                 Spacer(modifier = Modifier.width(6.dp))
                 Text(text = rating.toString(), color = Color.Black, fontWeight = FontWeight.Bold)
             }
-            
-            // MealMate Pick rozeti
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                 Icon(
                     painter = painterResource(id = R.drawable.ic_cook),
-                    contentDescription = "MealMate Pick",
+                    contentDescription = "MealMate",
                     tint = Color(0xFFE11932),
                     modifier = Modifier.size(28.dp)
                 )
-                Text(text = "MealMate Pick", color = Color.Gray, fontSize = 13.sp)
+                Text(text = "MealMate ", color = Color.Gray, fontSize = 13.sp)
             }
         }
-        
         Spacer(modifier = Modifier.height(2.dp))
-        
-        // Değerlendirme sayısı
         Row(
             modifier = Modifier.fillMaxWidth().padding(horizontal = 24.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(text = "$ratingsCount puan", color = Color.Gray, fontSize = 13.sp)
         }
-        
         Spacer(modifier = Modifier.height(8.dp))
-        
         // Açıklama
         Text(
             text = description,
@@ -258,7 +196,6 @@ fun RecipeDetailScreen(
             fontSize = 15.sp,
             modifier = Modifier.padding(horizontal = 24.dp, vertical = 8.dp)
         )
-        
         // Kırmızı alt çizgili süre bölümü
         Spacer(modifier = Modifier.height(8.dp))
         Column(
@@ -266,7 +203,6 @@ fun RecipeDetailScreen(
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp)
         ) {
-            // Başlık ve alt çizgi
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -279,7 +215,6 @@ fun RecipeDetailScreen(
                     fontSize = 18.sp,
                     modifier = Modifier.padding(bottom = 8.dp)
                 )
-                // Kırmızı alt çizgi
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -288,10 +223,7 @@ fun RecipeDetailScreen(
                         .align(Alignment.BottomStart)
                 ) {}
             }
-            
             Spacer(modifier = Modifier.height(8.dp))
-            
-            // Zaman bilgileri tablosu
             Row(
                 modifier = Modifier.fillMaxWidth().background(Color.White, shape = RoundedCornerShape(12.dp)).border(1.dp, Color(0xFFE0E0E0), shape = RoundedCornerShape(12.dp)).padding(12.dp),
                 horizontalArrangement = Arrangement.SpaceBetween
@@ -314,7 +246,6 @@ fun RecipeDetailScreen(
                 }
             }
         }
-        
         // Besin Değerleri bölümü
         Spacer(modifier = Modifier.height(12.dp))
         Column(
@@ -323,13 +254,12 @@ fun RecipeDetailScreen(
                 .padding(horizontal = 16.dp)
         ) {
             Text(
-                text = "Besin D",
+                text = "Besin Degereleri ",
                 color = Color.Black,
                 fontWeight = FontWeight.Bold,
                 fontSize = 18.sp,
                 modifier = Modifier.padding(bottom = 8.dp)
             )
-            // Besin değerleri tablosu
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -356,9 +286,7 @@ fun RecipeDetailScreen(
                 }
             }
         }
-        
         Spacer(modifier = Modifier.height(24.dp))
-        
         // Malzemeler ve Talimatlar için sekmeler
         TabRow(
             selectedTabIndex = selectedTab,
@@ -374,23 +302,18 @@ fun RecipeDetailScreen(
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp)
         ) {
-            // Malzemeler sekmesi
             Tab(
                 selected = selectedTab == 0,
                 onClick = { selectedTab = 0 },
                 text = { Text("Malzemeler", fontWeight = if (selectedTab == 0) FontWeight.Bold else FontWeight.Normal) }
             )
-            // Talimatlar sekmesi
             Tab(
                 selected = selectedTab == 1,
                 onClick = { selectedTab = 1 },
                 text = { Text("Talimatlar", fontWeight = if (selectedTab == 1) FontWeight.Bold else FontWeight.Normal) }
             )
         }
-        
         Spacer(modifier = Modifier.height(8.dp))
-        
-        // SEKMELER İÇERİĞİ
         if (selectedTab == 0) {
             // Malzemeler Listesi bölümü
             Column(
@@ -405,8 +328,6 @@ fun RecipeDetailScreen(
                     fontSize = 18.sp,
                     modifier = Modifier.padding(bottom = 8.dp)
                 )
-                
-                // Malzeme listesi kartı
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -414,16 +335,12 @@ fun RecipeDetailScreen(
                         .border(1.dp, Color(0xFFE0E0E0), shape = RoundedCornerShape(12.dp))
                         .padding(16.dp)
                 ) {
-                    // Her malzeme için özel formatlama
                     ingredients.forEach { ingredient ->
                         if (ingredient == "---") {
-                            // Ayırıcı çizgi
                             Spacer(modifier = Modifier.height(8.dp))
                         } else if (ingredient.endsWith(":")) {
-                            // Kategori başlığı (kırmızı ve kalın)
                             Text(ingredient, fontWeight = FontWeight.Bold, color = Color(0xFFE11932), fontSize = 15.sp, modifier = Modifier.padding(vertical = 4.dp))
                         } else {
-                            // Normal malzeme (bullet point ile)
                             Text("• $ingredient", fontSize = 15.sp, color = Color.Black, modifier = Modifier.padding(vertical = 2.dp))
                         }
                     }
@@ -443,10 +360,7 @@ fun RecipeDetailScreen(
                     fontSize = 18.sp,
                     modifier = Modifier.padding(bottom = 8.dp)
                 )
-                
-                // Her adım için resimli kart
                 instructions.forEachIndexed { idx, step ->
-                    // ADIM RESMİ BELİRLEME
                     val stepImageRes = when (title) {
                         "Mercimek Corbasi", "Mercimek Çorbası (Lokanta Usulü)" -> when (idx + 1) {
                             1 -> R.drawable.mercimek_corbasi_adim_1
@@ -509,10 +423,9 @@ fun RecipeDetailScreen(
                             5 -> R.drawable.domates_corbasi_adim5
                             else -> R.drawable.domates_corbasi
                         }
-                        else -> imageRes // Varsayılan olarak ana tarif resmi
+                        else -> imageRes
                     }
                     
-                    // ADIM KARTI
                     Card(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -521,16 +434,14 @@ fun RecipeDetailScreen(
                         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
                     ) {
                         Column {
-                            // Adım resmi
                             Image(
                                 painter = painterResource(id = stepImageRes),
-                                contentDescription = "Adım ${idx + 1}",
+                                contentDescription = "Step ${idx + 1}",
                                 contentScale = ContentScale.Crop,
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .height(200.dp)
                             )
-                            // Adım açıklaması
                             Text(
                                 text = "${idx + 1}. $step",
                                 fontSize = 16.sp,
@@ -542,7 +453,6 @@ fun RecipeDetailScreen(
                 }
             }
         }
-        
         Spacer(modifier = Modifier.height(24.dp))
     }
 } 
