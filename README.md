@@ -27,13 +27,17 @@ MealMate, yemek tarifleri ve yemek planlama konusunda kullanıcılara yardımcı
 
 ## Ekran Görüntüleri 📱
 
-| Tarif Detayı | Malzeme Listesi | Adım Adım Yapılış |
-| :---: | :---: | :---: |
-| <img src="./screenshots/recipe_detail.png" width="250"> | <img src="./screenshots/ingredients_list.png" width="250"> | <img src="./screenshots/step_by_step.png" width="250"> |
+| Başlangıç Ekranları | Ana Ekran & Navigasyon |
+| :---: | :---: |
+| <img src="./screenshots/baslangic_1.png" width="250"> | <img src="./screenshots/ana_ekran.png" width="250"> |
+| <img src="./screenshots/baslangic_2.png" width="250"> | <img src="./screenshots/ana_ekram2.png" width="250"> |
+| <img src="./screenshots/baslangic_3.png" width="250"> | <img src="./screenshots/navigasyon.png" width="250"> |
 
-| Alışveriş Listesi | Dolap Yönetimi | Ana Ekran |
-| :---: | :---: | :---: |
-| <img src="./screenshots/shopping_list.png" width="250"> | <img src="./screenshots/dolap_screen.png" width="250"> | <img src="./screenshots/main_screen.png" width="250"> |
+| Dolap & Market | Tarif Detayları |
+| :---: | :---: |
+| <img src="./screenshots/dolap_bos.png" width="250"> | <img src="./screenshots/recipe_detail.png" width="250"> |
+| <img src="./screenshots/dolap_dolu.png" width="250"> | <img src="./screenshots/Malzemeler%20ekrani.png" width="250"> |
+| <img src="./screenshots/market.png" width="250"> | <img src="./screenshots/adim_adim_talimatlari.png" width="250"> |
 
 ## Kurulum 🔧
 1. Projeyi klonlayın:
